@@ -177,3 +177,30 @@ summarized <- starwars %>%
 mutated <- starwars %>%
     dplyr::group_by(gender) %>%
     dplyr::mutate(avg_height = mean(height, na.rm = TRUE))
+
+#################################
+# dplyr::arrange()
+#################################
+
+# Arrange the starwars dataframe by homeworld
+arranged_df <- dplyr::arrange(starwars, homeworld)
+
+# Arrange the starwars dataframe by homeworld in descending order
+# hint: use desc()
+arranged_df <- dplyr::arrange(starwars, desc(homeworld))
+
+# Arrange starwars by species then height
+arranged_df <- dplyr::arrange(starwars, species, height)
+
+#################################
+# dplyr::rename()
+#################################
+
+# Rename the “name” column to “character”
+renamed <- starwars %>%
+    dplyr::rename(character = name)
+
+# Rename the “name” column to “character” and the “mass” column to “weight”
+renamed <- starwars %>%
+    dplyr::rename(character = name, weight = mass)
+
