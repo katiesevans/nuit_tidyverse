@@ -204,3 +204,27 @@ renamed <- starwars %>%
 renamed <- starwars %>%
     dplyr::rename(character = name, weight = mass)
 
+# Rename the “name” column to “character” and the “mass” column to “weight” using select()
+renamed <- starwars %>%
+    dplyr::select(character = name, weight = mass)
+
+#################################
+# dplyr::pull()
+#################################
+
+# Extract the birth year column as a vector
+starwars %>%
+    dplyr::pull(birth_year)
+
+#################################
+# dplyr::xxx_join()
+#################################
+
+
+
+#################################
+# dplyr::bind_rows()
+# dplyr::bind_cols()
+#################################
+
+
