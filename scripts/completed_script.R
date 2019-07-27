@@ -228,3 +228,66 @@ starwars %>%
 #################################
 
 
+#################################
+# tidyr::gather()
+#################################
+
+# Convert the starwars dataframe from wide to long, containing three columns: name, characteristic, value
+gathered <- starwars %>%
+  tidyr::gather(characteristic, value, height:starships)
+
+# gather as above but deselect the name column instead of selecting the others
+gathered <- starwars %>%
+  tidyr::gather(characteristic, value, -name)
+
+# Gather height, mass, eye color, skin color, and gender
+gathered <- starwars %>%
+  tidyr::gather(characteristic, value, height, mass, eye_color, skin_color, gender)
+
+#################################
+# tidyr::spread()
+#################################
+
+# Un-gather (spread) the starwars dataframe
+ungathered <- gathered %>%
+  tidyr::spread(characteristic, value)
+
+#################################
+# tidyr::unite()
+#################################
+
+# combine name and homeworld into one column named character (e.g. Luke Skywalker, Tatooine)
+united <- starwars %>%
+  tidyr::unite(name, homeworld, col = "character", sep = ", ")
+
+# Combine name, homeworld, and species into one column named character (e.g. Luke Skywalker, Tatooine, Human)
+united <- starwars %>%
+  tidyr::unite(name, homeworld, species, col = "character", sep = ", ")
+
+# Advanced: Combine name, homeworld, and species into one column named character (e.g. Luke Skywalker, Tatooine (Human))
+united <- starwars %>%
+  tidyr::unite(name, homeworld, col = "character", sep = ", ") %>%
+               dplyr::mutate(species = paste("(", species, ")", sep = "")) %>%
+               tidyr::unite(character, species, col = "character", sep = " ")
+
+# Combine name, homeworld, and species into one column named character but keep name and homeworld columns also
+# hint: remove = FALSE
+united <- starwars %>%
+  tidyr::unite(name, homeworld, col = "character", sep = ", ", remove = FALSE)
+
+#################################
+# tidyr::separate()
+#################################
+
+# Separate the ‘character’ column back into name and homeworld 
+separated <- starwars %>%
+  tidyr::unite(name, homeworld, col = "character", sep = ", ") %>%
+  tidyr::separate(character, into = c("name", "homeworld"), sep = ",")
+
+#################################
+# tidyr::separate_rows()
+#################################
+
+# split the films column so that each film is represented in its own row per character
+separated <- starwars %>% 
+  tidyr::separate_rows(films, sep = ",")
