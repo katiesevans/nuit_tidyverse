@@ -291,3 +291,11 @@ separated <- starwars %>%
 # split the films column so that each film is represented in its own row per character
 separated <- starwars %>% 
   tidyr::separate_rows(films, sep = ",")
+
+#################################
+# tidyr::drop_na()
+#################################
+
+# Remove all observations with no species
+no_species <- starwars %>%
+    tidyr::drop_na(species)
