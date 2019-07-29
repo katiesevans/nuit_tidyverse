@@ -24,3 +24,6 @@ Instructor: [Katie Evans](kathryn.evans@u.northwestern.edu)
 # Tidyverse Resources
 * [Tidyverse website](https://www.tidyverse.org)
 * [Cheat Sheets](https://www.rstudio.com/resources/cheatsheets)
+* [Dplyr Intro](https://cran.r-project.org/web/packages/dplyr/vignettes/dplyr.html)
+* [Tidyr Intro](https://cran.r-project.org/web/packages/tidyr/vignettes/tidy-data.html)
+* [Readr Intro](https://cran.r-project.org/web/packages/readr/vignettes/readr.html )
