@@ -220,13 +220,38 @@ starwars %>%
 # dplyr::xxx_join()
 #################################
 
+# read in example csv files (join_df1 and join_df2)
+join_df1 <- read.csv("~/Downloads/data/join_df1.csv")
+join_df2 <- read.csv("~/Downloads/data/join_df2.csv")
 
+# left join df1 and df2
+left <- dplyr::left_join(join_df1, join_df2)
+
+# right join df1 and df2
+right <- dplyr::right_join(join_df1, join_df2)
+
+# full join df1 and df2
+full <- dplyr::full_join(join_df1, join_df2)
+
+# full join df1 and df2 specifying which column is the same
+full <- dplyr::full_join(join_df1, join_df2, by = "A")
 
 #################################
 # dplyr::bind_rows()
 # dplyr::bind_cols()
 #################################
 
+# read in bind_df3.csv
+bind_df3 <- read.csv("~/Downloads/data/bind_df3.csv")
+
+# bind rows with join_df1
+bound <- dplyr::bind_rows(join_df1, bind_df3)
+
+# Make "d" vector
+d <- c(3, 5, 7, 1, 3, 6, NA, NA)
+
+# bind d as a column to join_df1
+dplyr::bind_cols(join_df1, D = d)
 
 #################################
 # tidyr::gather()
@@ -322,7 +347,7 @@ starwars %>%
 # hint: where is your working directory?
 new_starwars <- readr::read_csv("starwars.csv")
 
-
+# Read the starwars .csv file but specify the name column as a character and height as an integer
 new_starwars <- readr::read_csv("starwars.csv", 
                                  col_types = cols(
                                    name = col_character(),
