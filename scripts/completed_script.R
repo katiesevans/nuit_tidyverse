@@ -299,3 +299,37 @@ separated <- starwars %>%
 # Remove all observations with no species
 no_species <- starwars %>%
     tidyr::drop_na(species)
+
+#################################
+# readr::write_csv()
+#################################
+
+# Save the starwars data frame as a .csv file
+starwars %>%
+  dplyr::select(name:species) %>%
+  readr::write_csv("starwars.csv")
+
+# Save the starwars data frame as a .csv file without column names
+starwars %>%
+  dplyr::select(name:species) %>%
+  readr::write_csv("starwars.csv", col_names = F)
+
+#################################
+# readr::read_csv()
+#################################
+
+# Read the starwars .csv file you just saved
+# hint: where is your working directory?
+new_starwars <- readr::read_csv("starwars.csv")
+
+
+new_starwars <- readr::read_csv("starwars.csv", 
+                                 col_types = cols(
+                                   name = col_character(),
+                                   height = col_integer()
+                                 )
+)
+
+new_starwars <- readr::read_csv("starwars.csv", 
+                                col_types = "ci????????"
+)
