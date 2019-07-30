@@ -253,6 +253,13 @@ d <- c(3, 5, 7, 1, 3, 6, NA, NA)
 # bind d as a column to join_df1
 dplyr::bind_cols(join_df1, D = d)
 
+####################################################################################
+####################################################################################
+# Day 2
+####################################################################################
+####################################################################################
+
+
 #################################
 # tidyr::gather()
 #################################
@@ -358,3 +365,138 @@ new_starwars <- readr::read_csv("starwars.csv",
 new_starwars <- readr::read_csv("starwars.csv", 
                                 col_types = "ci????????"
 )
+
+#################################
+# stringr
+#################################
+
+# Keep all hair colors that mention brown
+brown_hair <- starwars %>%
+  dplyr::filter(stringr::str_detect(hair_color, "brown"))
+
+# Make a new column counting how many vowels are in each character’s name
+vowels <- starwars %>%
+  dplyr::mutate(vowels = stringr::str_count(name, "a|e|i|o|u"))
+
+# Make a new column counting how many vowels are in each character’s name
+# hint: change all names to lower case first
+vowels2 <- starwars %>%
+  dplyr::mutate(name = stringr::str_to_lower(name)) %>%
+  dplyr::mutate(vowels = stringr::str_count(name, "a|e|i|o|u"))
+
+# Replace all mentions of "Human" with "Homo sapien"
+species <- starwars %>%
+  dplyr::mutate(species = stringr::str_replace(species, "Human", "Homo sapiens"))
+
+# Give each starwars character a PhD
+# hint: add “, PhD” to the end of the name column
+doctorates <- starwars %>% 
+  dplyr::mutate(name = stringr::str_c(name, ", PhD"))
+
+# split "name" into "first name" and "last name"
+# hint: try str_split_fixed(“Luke Skywalker”, “ “, 2) first to see output
+stringr::str_split_fixed("Luke Skywalker", " ", 2)
+
+names <- starwars %>%
+  dplyr::mutate(first_name = stringr::str_split_fixed(name, " ", 2)[,1],
+                last_name = stringr::str_split_fixed(name, " ", 2)[,2])
+
+
+# Add a new column that counts the number of letters in each name
+counts <- starwars %>%
+  dplyr::mutate(name_counts = stringr::str_length(name))
+
+# Remove whitespace surrounding “ test “
+stringr::str_trim(" test ")
+
+#################################
+# lubridate
+#################################
+
+# parsing date and times
+# “1 Jan 2014”
+lubridate::dmy("1 Jan 2014")
+
+# “2018-03-15”
+lubridate::ymd("2018-03-15")
+
+# “1999/12/01T14”
+lubridate::ymd_h("1999/12/01T14")
+
+# “December 24th, 1960”
+lubridate::mdy("December 24th, 1960")
+
+# “20180405 02:45:51”
+lubridate::ymd_hms("20180405 02:45:51")
+
+# “1741, 5th August”
+lubridate::ydm("1741, 5th August")
+
+# “7 1993 feb”
+lubridate::dym("7 1993 feb")
+
+# “2030/04/16 20:30”
+lubridate::ymd_hm("2030/04/16 20:30")
+
+# “Nov. 2001 5th”
+lubridate::mdy("Nov. 2001 5th")
+
+# get and set times
+t <- lubridate::ymd_hms("2019-07-30 11:01:59")
+
+# date
+lubridate::date(t)
+
+# year
+lubridate::year(t)
+
+# month
+lubridate::month(t)
+
+# day
+lubridate::day(t)
+
+# weekday
+lubridate::wday(t)
+
+# hour
+lubridate::hour(t)
+
+# minute
+lubridate::minute(t)
+
+# second
+lubridate::second(t)
+
+# week
+lubridate::week(t)
+
+# am or pm?
+lubridate::am(t)
+
+# daylight saving time?
+lubridate::dst(t)
+
+# leap year?
+lubridate::leap_year(t)
+
+# Math with date-times
+
+# How much time until Christmas??
+lubridate::ymd_hms("2019-12-25 00:00:01")-lubridate::now()
+
+# What day will it be in 30 days?
+lubridate::now() + lubridate::days(30)
+
+# What time is it in London?
+lubridate::with_tz(now(), tzone = "GMT")
+
+# PERIODS, DURATIONS, INTERVALS
+
+# Add 2 hours to “2019-07-29 11:01:59”
+lubridate::ymd_hms("2019-07-29 11:01:59") + lubridate::hours(2)
+
+# Find the number of seconds in 30 days
+lubridate::ddays(30)
+
+

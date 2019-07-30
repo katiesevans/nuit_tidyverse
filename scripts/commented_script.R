@@ -278,6 +278,14 @@
 
 
 
+####################################################################################
+####################################################################################
+# Day 2
+####################################################################################
+####################################################################################
+
+
+
 #################################
 # tidyr::gather()
 #################################
@@ -384,6 +392,146 @@
 
 # Read the starwars .csv file but specify the name column as a character and height as an integer
 
+
+
+
+#################################
+# stringr
+#################################
+
+# Keep all hair colors that mention brown
+
+
+
+# Make a new column counting how many vowels are in each character’s name
+
+
+
+
+# Make a new column counting how many vowels are in each character’s name
+# hint: change all names to lower case first
+
+
+
+
+# Replace all mentions of "Human" with "Homo sapien"
+
+
+
+
+# Give each starwars character a PhD
+# hint: add “, PhD” to the end of the name column
+
+
+
+
+# split "name" into "first name" and "last name"
+# hint: try str_split_fixed(“Luke Skywalker”, “ “, 2) first to see output
+
+
+
+
+
+
+
+
+# Add a new column that counts the number of letters in each name
+
+
+
+
+# Remove whitespace surrounding “ test “
+
+
+
+#################################
+# lubridate
+#################################
+
+# parsing date and times
+# “1 Jan 2014”
+
+
+# “2018-03-15”
+
+
+# “1999/12/01T14”
+
+
+# “December 24th, 1960”
+
+
+# “20180405 02:45:51”
+
+
+# “1741, 5th August”
+
+
+# “7 1993 feb”
+
+
+# “2030/04/16 20:30”
+
+
+# “Nov. 2001 5th”
+
+
+# get and set times
+
+
+# date
+
+
+# year
+
+
+# month
+
+
+# day
+
+
+# weekday
+
+
+# hour
+
+
+# minute
+
+
+# second
+
+
+# week
+
+
+# am or pm?
+
+
+# daylight saving time?
+
+
+# leap year?
+
+
+# Math with date-times
+
+# How much time until Christmas??
+
+
+# What day will it be in 30 days?
+
+
+# What time is it in London?
+
+
+# PERIODS, DURATIONS, INTERVALS
+
+# Add 2 hours to “2019-07-29 11:01:59”
+
+
+# Find the number of seconds in 30 days
 
 
 
