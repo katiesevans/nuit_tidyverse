@@ -1,3 +1,10 @@
+####################################################################################
+####################################################################################
+# Part 1
+####################################################################################
+####################################################################################
+
+
 #################################
 # load data
 #################################
@@ -58,6 +65,10 @@ dplyr::select(starwars, -(hair_color:eye_color))
 # Select columns name, mass, skin color, hair color, and height (in order)
 dplyr::select(starwars, name, mass, skin_color, hair_color, height)
 
+# Rename the "name" column to "character" and the "mass" column to "weight" using select()
+renamed <- starwars %>%
+    dplyr::select(character = name, weight = mass)
+
 # Keep:  height greater than 100 &
 # Keep: humans &
 # Remove: brown hair color &
@@ -87,9 +98,11 @@ new_starwars <- starwars %>%
     dplyr::mutate(height_m = height / 100) %>%
     dplyr::mutate(bmi = mass / height_m^2)
 
-# select only name, height, mass, height_m, and bmi and view dataframe
+# select only name, height, mass, height_m, and bmi 
 new_starwars <- new_starwars %>%
     dplyr::select(name, height, mass, height_m, bmi)
+
+# and view new dataframe
 View(new_starwars)
 
 # re-calculate the bmi by changing the height column to meters instead of creating a new column
@@ -164,98 +177,10 @@ grouped_starwars <- starwars %>%
     dplyr::select(name, gender, eye_color, height, avg_height)
 
 
-#################################
-# dplyr::summarize()
-# dplyr::summarise()
-#################################
-
-summarized <- starwars %>%
-    dplyr::group_by(gender) %>%
-    dplyr::summarize(avg_height = mean(height, na.rm = TRUE))
-
-# look at the difference between summarize() and mutate() to calculate average height by gender
-mutated <- starwars %>%
-    dplyr::group_by(gender) %>%
-    dplyr::mutate(avg_height = mean(height, na.rm = TRUE))
-
-#################################
-# dplyr::arrange()
-#################################
-
-# Arrange the starwars dataframe by homeworld
-arranged_df <- dplyr::arrange(starwars, homeworld)
-
-# Arrange the starwars dataframe by homeworld in descending order
-# hint: use desc()
-arranged_df <- dplyr::arrange(starwars, desc(homeworld))
-
-# Arrange starwars by species then height
-arranged_df <- dplyr::arrange(starwars, species, height)
-
-#################################
-# dplyr::rename()
-#################################
-
-# Rename the “name” column to “character”
-renamed <- starwars %>%
-    dplyr::rename(character = name)
-
-# Rename the “name” column to “character” and the “mass” column to “weight”
-renamed <- starwars %>%
-    dplyr::rename(character = name, weight = mass)
-
-# Rename the “name” column to “character” and the “mass” column to “weight” using select()
-renamed <- starwars %>%
-    dplyr::select(character = name, weight = mass)
-
-#################################
-# dplyr::pull()
-#################################
-
-# Extract the birth year column as a vector
-starwars %>%
-    dplyr::pull(birth_year)
-
-#################################
-# dplyr::xxx_join()
-#################################
-
-# read in example csv files (join_df1 and join_df2)
-join_df1 <- read.csv("~/Downloads/data/join_df1.csv")
-join_df2 <- read.csv("~/Downloads/data/join_df2.csv")
-
-# left join df1 and df2
-left <- dplyr::left_join(join_df1, join_df2)
-
-# right join df1 and df2
-right <- dplyr::right_join(join_df1, join_df2)
-
-# full join df1 and df2
-full <- dplyr::full_join(join_df1, join_df2)
-
-# full join df1 and df2 specifying which column is the same
-full <- dplyr::full_join(join_df1, join_df2, by = "A")
-
-#################################
-# dplyr::bind_rows()
-# dplyr::bind_cols()
-#################################
-
-# read in bind_df3.csv
-bind_df3 <- read.csv("~/Downloads/data/bind_df3.csv")
-
-# bind rows with join_df1
-bound <- dplyr::bind_rows(join_df1, bind_df3)
-
-# Make "d" vector
-d <- c(3, 5, 7, 1, 3, 6, NA, NA)
-
-# bind d as a column to join_df1
-dplyr::bind_cols(join_df1, D = d)
 
 ####################################################################################
 ####################################################################################
-# Day 2
+# Part 2
 ####################################################################################
 ####################################################################################
 
@@ -284,6 +209,22 @@ gathered <- starwars %>%
 ungathered <- gathered %>%
   tidyr::spread(characteristic, value)
 
+# OYO:
+# GOAL: each name is a column with one row (eye color)
+# Step 1: select columns to keep (name, eye_color)
+# Step 2: spread the data frame
+eyes <- starwars %>%
+    dplyr::select(name, eye_color) %>%
+    tidyr::spread(name, eye_color)
+
+# What if you didn't select only name and eye color first?
+eyes <- starwars %>%
+    tidyr::spread(name, eye_color)
+
+# Spread the starwars dataframe by name, eye color and fill all missing values with '0'
+eyes <- starwars %>%
+    tidyr::spread(name, eye_color, fill = 0)
+
 #################################
 # tidyr::unite()
 #################################
@@ -296,207 +237,80 @@ united <- starwars %>%
 united <- starwars %>%
   tidyr::unite(name, homeworld, species, col = "character", sep = ", ")
 
-# Advanced: Combine name, homeworld, and species into one column named character (e.g. Luke Skywalker, Tatooine (Human))
+# Combine name, homeworld, and species into one column named character but keep name and homeworld columns also
+# hint: remove = FALSE
+united <- starwars %>%
+    tidyr::unite(name, homeworld, col = "character", sep = ", ", remove = FALSE)
+
+# !!Advanced!!: Combine name, homeworld, and species into one column named character (e.g. Luke Skywalker, Tatooine (Human))
+# Hint: this might take multiple steps...
+# Hint: paste("My name is", "Katie", sep = " ") => "My name is Katie"
 united <- starwars %>%
   tidyr::unite(name, homeworld, col = "character", sep = ", ") %>%
                dplyr::mutate(species = paste("(", species, ")", sep = "")) %>%
                tidyr::unite(character, species, col = "character", sep = " ")
 
-# Combine name, homeworld, and species into one column named character but keep name and homeworld columns also
-# hint: remove = FALSE
-united <- starwars %>%
-  tidyr::unite(name, homeworld, col = "character", sep = ", ", remove = FALSE)
 
 #################################
 # tidyr::separate()
 #################################
 
-# Separate the ‘character’ column back into name and homeworld 
-separated <- starwars %>%
-  tidyr::unite(name, homeworld, col = "character", sep = ", ") %>%
+# Separate the 'character' column back into name and homeworld 
+separated <- united %>%
   tidyr::separate(character, into = c("name", "homeworld"), sep = ",")
 
-#################################
-# tidyr::separate_rows()
-#################################
+# Separate the 'character' column back into name and homeworld but keep character also
+separated <- united %>%
+    tidyr::separate(character, into = c("name", "homeworld"), sep = ",", remove = FALSE)
 
-# split the films column so that each film is represented in its own row per character
-separated <- starwars %>% 
-  tidyr::separate_rows(films, sep = ",")
-
-#################################
-# tidyr::drop_na()
-#################################
-
-# Remove all observations with no species
-no_species <- starwars %>%
-    tidyr::drop_na(species)
-
-#################################
-# readr::write_csv()
-#################################
-
-# Save the starwars data frame as a .csv file
-starwars %>%
-  dplyr::select(name:species) %>%
-  readr::write_csv("starwars.csv")
-
-# Save the starwars data frame as a .csv file without column names
-starwars %>%
-  dplyr::select(name:species) %>%
-  readr::write_csv("starwars.csv", col_names = F)
-
-#################################
-# readr::read_csv()
-#################################
-
-# Read the starwars .csv file you just saved
-# hint: where is your working directory?
-new_starwars <- readr::read_csv("starwars.csv")
-
-# Read the starwars .csv file but specify the name column as a character and height as an integer
-new_starwars <- readr::read_csv("starwars.csv", 
-                                 col_types = cols(
-                                   name = col_character(),
-                                   height = col_integer()
-                                 )
-)
-
-new_starwars <- readr::read_csv("starwars.csv", 
-                                col_types = "ci????????"
-)
-
-#################################
-# stringr
-#################################
-
-# Keep all hair colors that mention brown
-brown_hair <- starwars %>%
-  dplyr::filter(stringr::str_detect(hair_color, "brown"))
-
-# Make a new column counting how many vowels are in each character’s name
-vowels <- starwars %>%
-  dplyr::mutate(vowels = stringr::str_count(name, "a|e|i|o|u"))
-
-# Make a new column counting how many vowels are in each character’s name
-# hint: change all names to lower case first
-vowels2 <- starwars %>%
-  dplyr::mutate(name = stringr::str_to_lower(name)) %>%
-  dplyr::mutate(vowels = stringr::str_count(name, "a|e|i|o|u"))
-
-# Replace all mentions of "Human" with "Homo sapien"
-species <- starwars %>%
-  dplyr::mutate(species = stringr::str_replace(species, "Human", "Homo sapiens"))
-
-# Give each starwars character a PhD
-# hint: add “, PhD” to the end of the name column
-doctorates <- starwars %>% 
-  dplyr::mutate(name = stringr::str_c(name, ", PhD"))
-
-# split "name" into "first name" and "last name"
-# hint: try str_split_fixed(“Luke Skywalker”, “ “, 2) first to see output
-stringr::str_split_fixed("Luke Skywalker", " ", 2)
-
+# Separate characters into first and last names
 names <- starwars %>%
-  dplyr::mutate(first_name = stringr::str_split_fixed(name, " ", 2)[,1],
-                last_name = stringr::str_split_fixed(name, " ", 2)[,2])
-
-
-# Add a new column that counts the number of letters in each name
-counts <- starwars %>%
-  dplyr::mutate(name_counts = stringr::str_length(name))
-
-# Remove whitespace surrounding “ test “
-stringr::str_trim(" test ")
+    tidyr::separate(name, into = c("first_name", "last_name"), sep = " ")
 
 #################################
-# lubridate
+# Extra practice
 #################################
 
-# parsing date and times
-# “1 Jan 2014”
-lubridate::dmy("1 Jan 2014")
+# practice 1
+# select all characters and their homeworlds in Return of the Jedi
+# try using 'grepl()' or 'stringr::str_detect()'
+practice1 <- starwars %>%
+    dplyr::filter(grepl("Return of the Jedi", films)) %>%
+    # dplyr::filter(stringr::str_detect(films, "Return of the Jedi")) %>%
+    dplyr::select(name, homeworld)
 
-# “2018-03-15”
-lubridate::ymd("2018-03-15")
+# practice 2
+# calculate the birth year of all characters (who have an age) given the "birth_year" column is actually AGE in 2019
+# Hint: rename "birth_year" as "age" then calculate birth year
+practice2 <- starwars %>%
+    dplyr::select(name, age = birth_year) %>%
+    dplyr::mutate(birth_year = 2019 - age) %>%
+    dplyr::filter(!is.na(age))
 
-# “1999/12/01T14”
-lubridate::ymd_h("1999/12/01T14")
+# practice 3
+# calculate the number of characters with each hair color combination
+# Note: "blonde, brown" is different than "blonde" and "brown"
+# hint: the function n() counts the number of observations in a group.
+practice3 <- starwars %>%
+    dplyr::select(name, hair_color) %>%
+    dplyr::group_by(hair_color) %>%
+    dplyr::mutate(number = n())
 
-# “December 24th, 1960”
-lubridate::mdy("December 24th, 1960")
+# practice 4
+# combine hair, skin, and eye_color as one "color" column. Separate by "&"
+# first remove anyone with any NA in these columns
+practice4 <- starwars %>%
+    dplyr::select(name, hair_color, eye_color, skin_color) %>%
+    dplyr::filter(!is.na(hair_color),
+                  !is.na(eye_color),
+                  !is.na(skin_color)) %>%
+    tidyr::unite(hair_color, eye_color, skin_color, col = "color (hair & eye & skin)", sep = " & ")
 
-# “20180405 02:45:51”
-lubridate::ymd_hms("20180405 02:45:51")
-
-# “1741, 5th August”
-lubridate::ydm("1741, 5th August")
-
-# “7 1993 feb”
-lubridate::dym("7 1993 feb")
-
-# “2030/04/16 20:30”
-lubridate::ymd_hm("2030/04/16 20:30")
-
-# “Nov. 2001 5th”
-lubridate::mdy("Nov. 2001 5th")
-
-# get and set times
-t <- lubridate::ymd_hms("2019-07-30 11:01:59")
-
-# date
-lubridate::date(t)
-
-# year
-lubridate::year(t)
-
-# month
-lubridate::month(t)
-
-# day
-lubridate::day(t)
-
-# weekday
-lubridate::wday(t)
-
-# hour
-lubridate::hour(t)
-
-# minute
-lubridate::minute(t)
-
-# second
-lubridate::second(t)
-
-# week
-lubridate::week(t)
-
-# am or pm?
-lubridate::am(t)
-
-# daylight saving time?
-lubridate::dst(t)
-
-# leap year?
-lubridate::leap_year(t)
-
-# Math with date-times
-
-# How much time until Christmas??
-lubridate::ymd_hms("2019-12-25 00:00:01")-lubridate::now()
-
-# What day will it be in 30 days?
-lubridate::now() + lubridate::days(30)
-
-# What time is it in London?
-lubridate::with_tz(now(), tzone = "GMT")
-
-# PERIODS, DURATIONS, INTERVALS
-
-# Add 2 hours to “2019-07-29 11:01:59”
-lubridate::ymd_hms("2019-07-29 11:01:59") + lubridate::hours(2)
-
-# Find the number of seconds in 30 days
-lubridate::ddays(30)
-
+# practice 5 - see example dataframe
+practice5 <- starwars %>%
+    dplyr::select(name:species) %>%
+    dplyr::filter(species == "Human",
+                  gender == "female") %>%
+    tidyr::gather(variable, value, -name) %>%
+    tidyr::spread(name, value)
 
