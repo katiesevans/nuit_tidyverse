@@ -1,5 +1,5 @@
 # Data Manipulation with the Tidyverse
-Tidyverse workshop for Northwestern Data Science and Programming Workshops Summer 2019
+Tidyverse workshop for Northwestern Data Science and Programming Workshops Fall 2019
 
 Instructor: [Katie Evans](kathryn.evans@u.northwestern.edu)
 
@@ -11,9 +11,9 @@ Instructor: [Katie Evans](kathryn.evans@u.northwestern.edu)
 # Topics to cover
 * **dplyr**: The dplyr package is the most useful package in R for data manipulation. One of the greatest advantages of the package is that you can use the pipe function (%>%) to combine different functions.
 * **tidyr**: The tidyr package complements dplyr perfectly. It boosts the power of dplyr for data manipulation and pre-processing.
-* **readr**: The readr package is used to import and export data as tibbles in R.
 
 # Other Tidyverse packages to check out:
+* **readr**: The readr package is used to import and export data as tibbles in R.
 * **stringr**: The stringr package is used for strings. It provides a cohesive set of functions designed to make working with strings as easy as possible.
 * **ggplot2**: Data scientists universally love using ggplot2 to produce their charts and visualizations!
 * **lubridate**: The lubridate package is the best way to deal with dates and times in R! From converting strings to dates to calculating hours between two time points.
