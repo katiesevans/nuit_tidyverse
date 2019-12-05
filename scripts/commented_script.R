@@ -67,7 +67,11 @@
 # Rename the "name" column to "character" and the "mass" column to "weight" using select()
 
 
-    
+
+# Rename the "name" column to "character" and the "mass" column to "weight" using rename()
+
+
+
 # Keep:  height greater than 100 &
 # Keep: humans &
 # Remove: brown hair color &

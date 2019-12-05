@@ -69,6 +69,10 @@ dplyr::select(starwars, name, mass, skin_color, hair_color, height)
 renamed <- starwars %>%
     dplyr::select(character = name, weight = mass)
 
+# Rename the "name" column to "character" and the "mass" column to "weight" using rename()
+renamed <- starwars %>%
+    dplyr::rename(character = name, weight = mass)
+
 # Keep:  height greater than 100 &
 # Keep: humans &
 # Remove: brown hair color &
