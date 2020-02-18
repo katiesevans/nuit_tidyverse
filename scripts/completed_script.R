@@ -58,6 +58,9 @@ dplyr::select(starwars, -(hair_color:eye_color))
 # Select columns name, mass, skin color, hair color, and height (in order)
 dplyr::select(starwars, name, mass, skin_color, hair_color, height)
 
+# rename the "name" column to "character" and the "mass" column to "weight" using select()
+dplyr::select(character = name, weight = mass)
+
 # Keep:  height greater than 100 &
 # Keep: humans &
 # Remove: brown hair color &
@@ -70,6 +73,18 @@ df <- starwars %>%
     dplyr::filter(hair_color != "brown") %>%
     dplyr::select(-vehicles) %>%
     dplyr::select(name, homeworld, height, species, hair_color)
+
+#################################
+# dplyr::rename()
+#################################
+
+# Rename the "name" column to "character" 
+renamed <- starwars %>%
+    dplyr::rename(character = name)
+
+# Rename the "name" column to "character" and the "mass" column to "weight"
+renamed2 <- starwars %>%
+    dplyr::rename(character = name, weight = mass)
 
 #################################
 # dplyr::mutate()
@@ -193,23 +208,6 @@ arranged_df <- dplyr::arrange(starwars, desc(homeworld))
 arranged_df <- dplyr::arrange(starwars, species, height)
 
 #################################
-# dplyr::rename()
-#################################
-
-# Rename the “name” column to “character”
-renamed <- starwars %>%
-    dplyr::rename(character = name)
-
-# Rename the “name” column to “character” and the “mass” column to “weight”
-renamed <- starwars %>%
-    dplyr::rename(character = name, weight = mass)
-
-# Rename the “name” column to “character” and the “mass” column to “weight” using select()
-renamed <- starwars %>%
-    dplyr::select(character = name, weight = mass)
-
-
-#################################
 # dplyr::xxx_join()
 #################################
 
@@ -229,22 +227,75 @@ full <- dplyr::full_join(join_df1, join_df2)
 # full join df1 and df2 specifying which column is the same
 full <- dplyr::full_join(join_df1, join_df2, by = "A")
 
+# Create df1 by selecting name, height and mass
+# Create df2 by selecting name, eye_color, hair_color, and gender and arrange by name
+# Join df1 and df2 so as to not lose any rows
+df1 <- starwars %>%
+    dplyr::select(name, height, mass)
+
+df2 <- starwars %>%
+    dplyr::select(name, eye_color, hair_color, gender) %>%
+    dplyr::arrange(name)
+
+joined_df <- dplyr::full_join(df1, df2, by = "name")
+
+# Create df3 by selecting name and gender
+# Create df4 as a table counting number of males and females in starwars data
+# Join df3 and df4 by left and right join, compare.
+df3 <- starwars %>%
+    dplyr::select(name, gender)
+
+df4 <- starwars %>%
+    dplyr::filter(gender %in% c("male", "female"))%>%
+    dplyr::group_by(gender) %>%
+    dplyr::summarize(number = n())
+
+left_df <- dplyr::left_join(df3, df4, by = "gender")
+right_df <- dplyr::right_join(df3, df4, by = "gender")
+
 #################################
 # dplyr::bind_rows()
 # dplyr::bind_cols()
 #################################
 
+### bind_rows()
 # read in bind_df3.csv
 bind_df3 <- read.csv("~/Downloads/data/bind_df3.csv")
 
 # bind rows with join_df1
 bound <- dplyr::bind_rows(join_df1, bind_df3)
 
+# Create "females" dataframe by selecting name, gender (only females), species
+# Create "males" dataframe by selecting name, gender (only males), species
+# Combine male and female dataframes using dplyr::bind_rows()
+females <- starwars %>%
+    dplyr::select(name, gender, species) %>%
+    dplyr::filter(gender == "female")
+
+males <- starwars %>%
+    dplyr::select(name, gender, species) %>%
+    dplyr::filter(gender == "male")
+
+bound <- females %>%
+    dplyr::bind_rows(males)
+
+# or bound <- dplyr::bind_rows(females, males)
+
+### bind_cols()
 # Make "d" vector
 d <- c(3, 5, 7, 1, 3, 6, NA, NA)
 
 # bind d as a column to join_df1
 dplyr::bind_cols(join_df1, D = d)
+
+# Create df1 by selecting name, height and mass
+# Create df2 by selecting name, eye_color, hair_color, and gender and arrange by name
+# Combine df1 and df2 using dplyr::bind_cols()
+bound2 <- dplyr::bind_cols(df1, df2)
+
+# compare with joined_df
+joined_df <- dplyr::full_join(df1, df2, by = "name")
+
 
 #################################
 # Extra practice
@@ -284,12 +335,11 @@ practice3 <- starwars %>%
     dplyr::group_by(hair_color) %>%
     dplyr::mutate(number = n())
 
-# practice 3
+# practice 4
 # select all characters and their homeworlds in Return of the Jedi
 # try using 'grepl()' 
-practice3 <- starwars %>%
+practice4 <- starwars %>%
     dplyr::filter(grepl("Return of the Jedi", films)) %>%
-    # dplyr::filter(stringr::str_detect(films, "Return of the Jedi")) %>%
     dplyr::select(name, homeworld)
 
 
@@ -324,41 +374,70 @@ gathered <- starwars %>%
 ungathered <- gathered %>%
   tidyr::spread(characteristic, value)
 
+# OYO:
+# GOAL: each name is a column with one row (eye color)
+# Step 1: select columns to keep (name, eye_color)
+# Step 2: spread the data frame
+eyes <- starwars %>%
+    dplyr::select(name, eye_color) %>%
+    tidyr::spread(name, eye_color)
+
+# What if you didn't select only name and eye color first?
+eyes <- starwars %>%
+    tidyr::spread(name, eye_color)
+
+# Spread the starwars dataframe by name, eye color and fill all missing values with '0'
+eyes <- starwars %>%
+    tidyr::spread(name, eye_color, fill = 0)
+
 #################################
 # tidyr::unite()
 #################################
 
 # combine name and homeworld into one column named character (e.g. Luke Skywalker, Tatooine)
 united <- starwars %>%
-  tidyr::unite(name, homeworld, col = "character", sep = ", ")
+    tidyr::unite(name, homeworld, col = "character", sep = ", ")
 
 # Combine name, homeworld, and species into one column named character (e.g. Luke Skywalker, Tatooine, Human)
 united <- starwars %>%
-  tidyr::unite(name, homeworld, species, col = "character", sep = ", ")
-
-# Advanced: Combine name, homeworld, and species into one column named character (e.g. Luke Skywalker, Tatooine (Human))
-united <- starwars %>%
-  tidyr::unite(name, homeworld, col = "character", sep = ", ") %>%
-               dplyr::mutate(species = paste("(", species, ")", sep = "")) %>%
-               tidyr::unite(character, species, col = "character", sep = " ")
+    tidyr::unite(name, homeworld, species, col = "character", sep = ", ")
 
 # Combine name, homeworld, and species into one column named character but keep name and homeworld columns also
 # hint: remove = FALSE
 united <- starwars %>%
-  tidyr::unite(name, homeworld, col = "character", sep = ", ", remove = FALSE)
+    tidyr::unite(name, homeworld, col = "character", sep = ", ", remove = FALSE)
+
+# !!Advanced!!: Combine name, homeworld, and species into one column named character (e.g. Luke Skywalker, Tatooine (Human))
+# Hint: this might take multiple steps...
+# Hint: paste("My name is", "Katie", sep = " ") => "My name is Katie"
+united <- starwars %>%
+    tidyr::unite(name, homeworld, col = "character", sep = ", ") %>%
+    dplyr::mutate(species = paste("(", species, ")", sep = "")) %>%
+    tidyr::unite(character, species, col = "character", sep = " ")
 
 #################################
 # tidyr::separate()
 #################################
 
-# Separate the ‘character’ column back into name and homeworld 
-separated <- starwars %>%
-  tidyr::unite(name, homeworld, col = "character", sep = ", ") %>%
-  tidyr::separate(character, into = c("name", "homeworld"), sep = ",")
+# Separate the 'character' column back into name and homeworld 
+separated <- united %>%
+    tidyr::separate(character, into = c("name", "homeworld"), sep = ",")
+
+# Separate the 'character' column back into name and homeworld but keep character also
+separated <- united %>%
+    tidyr::separate(character, into = c("name", "homeworld"), sep = ",", remove = FALSE)
+
+# Separate characters into first and last names
+names <- starwars %>%
+    tidyr::separate(name, into = c("first_name", "last_name"), sep = " ")
 
 #################################
 # tidyr::separate_rows()
 #################################
+
+# Separate the "hair_color" column to be separate observations (rows) e.g. brown, grey
+hair_cleaned <- starwars %>%
+    tidyr::separate_rows(hair_color, sep = ",")
 
 # split the films column so that each film is represented in its own row per character
 separated <- starwars %>% 
@@ -371,6 +450,10 @@ separated <- starwars %>%
 # Remove all observations with no species
 no_species <- starwars %>%
     tidyr::drop_na(species)
+
+# Remove all rows with any NA value
+no_na <- starwars %>%
+    na.omit()
 
 #################################
 # readr::write_csv()
@@ -410,13 +493,27 @@ new_starwars <- readr::read_csv("starwars.csv",
 # stringr
 #################################
 
+# which rows have hair colors that mention brown?
+stringr::str_detect(hair_color, "brown")
+
 # Keep all hair colors that mention brown
 brown_hair <- starwars %>%
   dplyr::filter(stringr::str_detect(hair_color, "brown"))
 
+# Make a new column counting how many a's are in each character’s name
+count_a <- starwars %>%
+    dplyr::mutate(vowels = stringr::str_count(name, "a"))
+
 # Make a new column counting how many vowels are in each character’s name
+# Hint: "this|that" reads "this OR that"
 vowels <- starwars %>%
   dplyr::mutate(vowels = stringr::str_count(name, "a|e|i|o|u"))
+
+# Make a new column counting how many vowels are in each character’s name
+# Hint: "this|that" reads "this OR that"
+# Make sure you get both UPPER and lower case vowels
+vowels <- starwars %>%
+    dplyr::mutate(vowels = stringr::str_count(name, "a|e|i|o|u|A|E|I|O|U"))
 
 # Make a new column counting how many vowels are in each character’s name
 # hint: change all names to lower case first
@@ -433,13 +530,21 @@ species <- starwars %>%
 doctorates <- starwars %>% 
   dplyr::mutate(name = stringr::str_c(name, ", PhD"))
 
+# compare to paste()
+doctorates2 <- starwars %>% 
+    dplyr::mutate(name = paste(name, ", PhD", sep = ""))
+
 # split "name" into "first name" and "last name"
-# hint: try str_split_fixed(“Luke Skywalker”, “ “, 2) first to see output
+# hint: try str_split_fixed("Luke Skywalker", " ", 2) first to see output
 stringr::str_split_fixed("Luke Skywalker", " ", 2)
 
 names <- starwars %>%
   dplyr::mutate(first_name = stringr::str_split_fixed(name, " ", 2)[,1],
                 last_name = stringr::str_split_fixed(name, " ", 2)[,2])
+
+# Compare to tidyr::separate()
+names2 <- starwars %>%
+    tidyr::separate(name, into = c("first_name", "last_name", sep = " "))
 
 
 # Add a new column that counts the number of letters in each name
@@ -544,18 +649,32 @@ lubridate::ddays(30)
 # Extra practice
 #################################
 
-# practice 4
+# practice 5
+# Split the films column so that each film is represented in its own row per character
+# Keep only name and film
+# Then use stringr to clean up the films column
+# Hint: \\ is used to escape special characters like ( or "
+## Example: cannot use "(" to detect a (, but use "\\("
+# Hint: you can combine multiple patterns using "pattern1|pattern2"
+practice5 <- starwars %>%
+    dplyr::select(name, films) %>%
+    tidyr::separate_rows(films, sep = ",") %>%
+    dplyr::mutate(films = stringr::str_replace_all(string = films, 
+                                                   pattern = 'c\\(|\\)|\\"', 
+                                                   replacement = ""))
+
+# practice 6
 # combine hair, skin, and eye_color as one "color" column. Separate by "&"
 # first remove anyone with any NA in these columns
-practice4 <- starwars %>%
+practice6 <- starwars %>%
     dplyr::select(name, hair_color, eye_color, skin_color) %>%
     dplyr::filter(!is.na(hair_color),
                   !is.na(eye_color),
                   !is.na(skin_color)) %>%
     tidyr::unite(hair_color, eye_color, skin_color, col = "color (hair & eye & skin)", sep = " & ")
 
-# practice 5 - see example dataframe
-practice5 <- starwars %>%
+# practice 7 - see example dataframe
+practice7 <- starwars %>%
     dplyr::select(name:species) %>%
     dplyr::filter(species == "Human",
                   gender == "female") %>%
