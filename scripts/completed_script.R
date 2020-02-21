@@ -437,11 +437,11 @@ names <- starwars %>%
 
 # Separate the "hair_color" column to be separate observations (rows) e.g. brown, grey
 hair_cleaned <- starwars %>%
-    tidyr::separate_rows(hair_color, sep = ",")
+    tidyr::separate_rows(hair_color, sep = ", ")
 
 # split the films column so that each film is represented in its own row per character
 separated <- starwars %>% 
-  tidyr::separate_rows(films, sep = ",")
+  tidyr::separate_rows(films, sep = ", ")
 
 #################################
 # tidyr::drop_na()
